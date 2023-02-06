@@ -720,6 +720,7 @@ dependencies = [
  "num_cpus",
  "serde",
  "serde_json",
+ "thiserror",
 ]
 
 [[package]]

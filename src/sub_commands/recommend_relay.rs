@@ -1,6 +1,7 @@
 use clap::Args;
 use nostr_sdk::Result;
 
+use crate::error::Error;
 use crate::utils::{create_client, handle_keys};
 
 #[derive(Args)]
@@ -17,7 +18,7 @@ pub fn recommend_relay(
     sub_command_args: &RecommendRelaySubCommand,
 ) -> Result<()> {
     if relays.is_empty() {
-        panic!("No relays specified, at least one relay is required!")
+        return Err(Error::NoRelay.into());
     }
 
     let keys = handle_keys(private_key)?;

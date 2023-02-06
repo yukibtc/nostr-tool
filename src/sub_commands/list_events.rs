@@ -3,6 +3,7 @@ use std::str::FromStr;
 use clap::Args;
 use nostr_sdk::prelude::*;
 
+use crate::error::Error;
 use crate::utils::create_client;
 
 #[derive(Args)]
@@ -35,7 +36,7 @@ pub struct ListEventsSubCommand {
 
 pub fn list_events(relays: Vec<String>, sub_command_args: &ListEventsSubCommand) -> Result<()> {
     if relays.is_empty() {
-        panic!("No relays specified, at least one relay is required!")
+        return Err(Error::NoRelay.into());
     }
 
     let client = create_client(&Keys::generate(), relays, 0)?;

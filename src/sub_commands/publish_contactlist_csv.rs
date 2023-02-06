@@ -4,6 +4,7 @@ use clap::Args;
 use nostr_sdk::prelude::*;
 use serde::Deserialize;
 
+use crate::error::Error;
 use crate::utils::{create_client, handle_keys};
 
 #[derive(Args)]
@@ -32,7 +33,7 @@ pub fn publish_contact_list_from_csv_file(
     sub_command_args: &PublishContactListCsvSubCommand,
 ) -> Result<()> {
     if relays.is_empty() {
-        panic!("No relays specified, at least one relay is required!")
+        return Err(Error::NoRelay.into());
     }
 
     let keys = handle_keys(private_key)?;

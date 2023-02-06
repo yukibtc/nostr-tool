@@ -1,6 +1,7 @@
 use clap::Args;
 use nostr_sdk::prelude::*;
 
+use crate::error::Error;
 use crate::utils::{create_client, handle_keys, parse_key};
 
 #[derive(Args)]
@@ -20,7 +21,7 @@ pub fn delete(
     sub_command_args: &DeleteEventSubCommand,
 ) -> Result<()> {
     if relays.is_empty() {
-        panic!("No relays specified, at least one relay is required!")
+        return Err(Error::NoRelay.into());
     }
 
     let keys = handle_keys(private_key)?;

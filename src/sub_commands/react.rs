@@ -3,6 +3,7 @@ use std::str::FromStr;
 use clap::Args;
 use nostr_sdk::prelude::*;
 
+use crate::error::Error;
 use crate::utils::{create_client, handle_keys, parse_key};
 
 #[derive(Args)]
@@ -25,7 +26,7 @@ pub fn react_to_event(
     sub_command_args: &ReactionSubCommand,
 ) -> Result<()> {
     if relays.is_empty() {
-        panic!("No relays specified, at least one relay is required!")
+        return Err(Error::NoRelay.into());
     }
 
     let keys = handle_keys(private_key)?;

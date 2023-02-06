@@ -1,6 +1,7 @@
 use clap::{Parser, Subcommand};
 use nostr_sdk::Result;
 
+mod error;
 mod sub_commands;
 mod utils;
 

@@ -2,6 +2,7 @@ use clap::Args;
 use nostr_sdk::nostr::nips::nip05;
 use nostr_sdk::prelude::*;
 
+use crate::error::Error;
 use crate::utils::{create_client, handle_keys};
 
 #[derive(Args)]
@@ -28,7 +29,7 @@ pub fn update_metadata(
     sub_command_args: &UpdateMetadataSubCommand,
 ) -> Result<()> {
     if relays.is_empty() {
-        panic!("No relays specified, at least one relay is required!")
+        return Err(Error::NoRelay.into());
     }
 
     let keys = handle_keys(private_key)?;
