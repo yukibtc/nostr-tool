@@ -46,7 +46,7 @@ enum Commands {
     Vanity(sub_commands::vanity::VanitySubCommand),
 }
 
-fn main() -> Result<()> {
+fn run() -> Result<()> {
     // Parse input
     let args: Cli = Cli::parse();
 
@@ -120,5 +120,11 @@ fn main() -> Result<()> {
             sub_commands::convert_key::convert_key(sub_command_args)
         }
         Commands::Vanity(sub_command_args) => sub_commands::vanity::vanity(sub_command_args),
+    }
+}
+
+fn main() {
+    if let Err(e) = run() {
+        eprintln!("{e}")
     }
 }
