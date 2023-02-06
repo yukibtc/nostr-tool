@@ -1,8 +1,8 @@
 use clap::Args;
-use nostr_sdk::Result;
+use nostr_sdk::prelude::*;
 
 use crate::error::Error;
-use crate::utils::{create_client, handle_keys};
+use crate::utils::create_client;
 
 #[derive(Args)]
 pub struct RecommendRelaySubCommand {
@@ -12,7 +12,7 @@ pub struct RecommendRelaySubCommand {
 }
 
 pub fn recommend_relay(
-    private_key: Option<String>,
+    keys: Keys,
     relays: Vec<String>,
     difficulty_target: u8,
     sub_command_args: &RecommendRelaySubCommand,
@@ -21,7 +21,6 @@ pub fn recommend_relay(
         return Err(Error::NoRelay.into());
     }
 
-    let keys = handle_keys(private_key)?;
     let client = create_client(&keys, relays, difficulty_target)?;
 
     client.add_recommended_relay(sub_command_args.url.clone())?;

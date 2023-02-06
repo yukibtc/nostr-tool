@@ -5,7 +5,7 @@ use nostr_sdk::prelude::*;
 use serde::Deserialize;
 
 use crate::error::Error;
-use crate::utils::{create_client, handle_keys};
+use crate::utils::create_client;
 
 #[derive(Args)]
 pub struct PublishContactListCsvSubCommand {
@@ -27,7 +27,7 @@ pub struct ContactListTag {
 }
 
 pub fn publish_contact_list_from_csv_file(
-    private_key: Option<String>,
+    keys: Keys,
     relays: Vec<String>,
     difficulty_target: u8,
     sub_command_args: &PublishContactListCsvSubCommand,
@@ -36,7 +36,6 @@ pub fn publish_contact_list_from_csv_file(
         return Err(Error::NoRelay.into());
     }
 
-    let keys = handle_keys(private_key)?;
     let client = create_client(&keys, relays, difficulty_target)?;
 
     let mut rdr = csv::Reader::from_path(&sub_command_args.filepath)?;

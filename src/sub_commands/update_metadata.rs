@@ -3,7 +3,7 @@ use nostr_sdk::nostr::nips::nip05;
 use nostr_sdk::prelude::*;
 
 use crate::error::Error;
-use crate::utils::{create_client, handle_keys};
+use crate::utils::create_client;
 
 #[derive(Args)]
 pub struct UpdateMetadataSubCommand {
@@ -23,7 +23,7 @@ pub struct UpdateMetadataSubCommand {
 }
 
 pub fn update_metadata(
-    private_key: Option<String>,
+    keys: Keys,
     relays: Vec<String>,
     difficulty_target: u8,
     sub_command_args: &UpdateMetadataSubCommand,
@@ -32,7 +32,6 @@ pub fn update_metadata(
         return Err(Error::NoRelay.into());
     }
 
-    let keys = handle_keys(private_key)?;
     let client = create_client(&keys, relays, difficulty_target)?;
 
     let mut metadata = Metadata::new();

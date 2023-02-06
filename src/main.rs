@@ -2,27 +2,22 @@ use clap::{Parser, Subcommand};
 use nostr_sdk::Result;
 
 mod error;
+mod io;
 mod sub_commands;
 mod utils;
 
 /// Simple CLI application to interact with nostr
 #[derive(Parser)]
-#[command(name = "nostr-tool")]
-#[command(author = "0xtr. <oxtrr@protonmail.com")]
-#[command(version = "0.1")]
 #[command(author, version, about, long_about = None)]
 struct Cli {
-    #[command(subcommand)]
-    command: Commands,
-    /// User private key
-    #[arg(short, long)]
-    private_key: Option<String>,
     /// Relay to connect to
     #[arg(short, long, action = clap::ArgAction::Append)]
     relays: Vec<String>,
     /// Proof of work difficulty target
     #[arg(short, long, action = clap::ArgAction::Append, default_value_t = 0)]
     difficulty_target: u8,
+    #[command(subcommand)]
+    command: Commands,
 }
 
 #[derive(Subcommand)]
@@ -58,53 +53,63 @@ fn main() -> Result<()> {
     // Post event
     match &args.command {
         Commands::UpdateMetadata(sub_command_args) => {
+            let keys = io::get_secret_key()?;
             sub_commands::update_metadata::update_metadata(
-                args.private_key,
+                keys,
                 args.relays,
                 args.difficulty_target,
                 sub_command_args,
             )
         }
-        Commands::TextNote(sub_command_args) => sub_commands::text_note::broadcast_textnote(
-            args.private_key,
-            args.relays,
-            args.difficulty_target,
-            sub_command_args,
-        ),
+        Commands::TextNote(sub_command_args) => {
+            let keys = io::get_secret_key()?;
+            sub_commands::text_note::broadcast_textnote(
+                keys,
+                args.relays,
+                args.difficulty_target,
+                sub_command_args,
+            )
+        }
         Commands::RecommendRelay(sub_command_args) => {
+            let keys = io::get_secret_key()?;
             sub_commands::recommend_relay::recommend_relay(
-                args.private_key,
+                keys,
                 args.relays,
                 args.difficulty_target,
                 sub_command_args,
             )
         }
         Commands::PublishContactListCsv(sub_command_args) => {
+            let keys = io::get_secret_key()?;
             sub_commands::publish_contactlist_csv::publish_contact_list_from_csv_file(
-                args.private_key,
+                keys,
                 args.relays,
                 args.difficulty_target,
                 sub_command_args,
             )
         }
-        Commands::SendDirectMessage(sub_command_args) => sub_commands::dm::send(
-            args.private_key,
-            args.relays,
-            args.difficulty_target,
-            sub_command_args,
-        ),
-        Commands::DeleteEvent(sub_command_args) => sub_commands::delete_event::delete(
-            args.private_key,
-            args.relays,
-            args.difficulty_target,
-            sub_command_args,
-        ),
-        Commands::React(sub_command_args) => sub_commands::react::react_to_event(
-            args.private_key,
-            args.relays,
-            args.difficulty_target,
-            sub_command_args,
-        ),
+        Commands::SendDirectMessage(sub_command_args) => {
+            let keys = io::get_secret_key()?;
+            sub_commands::dm::send(keys, args.relays, args.difficulty_target, sub_command_args)
+        }
+        Commands::DeleteEvent(sub_command_args) => {
+            let keys = io::get_secret_key()?;
+            sub_commands::delete_event::delete(
+                keys,
+                args.relays,
+                args.difficulty_target,
+                sub_command_args,
+            )
+        }
+        Commands::React(sub_command_args) => {
+            let keys = io::get_secret_key()?;
+            sub_commands::react::react_to_event(
+                keys,
+                args.relays,
+                args.difficulty_target,
+                sub_command_args,
+            )
+        }
         Commands::ListEvents(sub_command_args) => {
             sub_commands::list_events::list_events(args.relays, sub_command_args)
         }

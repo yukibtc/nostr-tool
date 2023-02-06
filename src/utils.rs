@@ -1,25 +1,6 @@
 use nostr_sdk::blocking::Client;
 use nostr_sdk::prelude::*;
 
-pub fn handle_keys(private_key: Option<String>) -> Result<Keys> {
-    // Parse and validate private key
-    let keys = match private_key {
-        Some(pk) => {
-            // create a new identity using the provided private key
-            Keys::from_sk_str(pk.as_str())?
-        }
-        None => {
-            // create a new identity with a new keypair
-            println!("No private key provided, creating new identity");
-            Keys::generate()
-        }
-    };
-
-    println!("Private key: {}", keys.secret_key()?.to_bech32()?);
-    println!("Public key: {}", keys.public_key().to_bech32()?);
-    Ok(keys)
-}
-
 pub fn create_client(keys: &Keys, relays: Vec<String>, difficulty: u8) -> Result<Client> {
     let opts = Options::new().wait_for_send(true).difficulty(difficulty);
     let client = Client::new_with_opts(keys, opts);

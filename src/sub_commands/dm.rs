@@ -4,7 +4,7 @@ use clap::Args;
 use nostr_sdk::prelude::*;
 
 use crate::error::Error;
-use crate::utils::{create_client, handle_keys, parse_key};
+use crate::utils::{create_client, parse_key};
 
 #[derive(Args)]
 pub struct SendDirectMessageSubCommand {
@@ -17,7 +17,7 @@ pub struct SendDirectMessageSubCommand {
 }
 
 pub fn send(
-    private_key: Option<String>,
+    keys: Keys,
     relays: Vec<String>,
     difficulty_target: u8,
     sub_command_args: &SendDirectMessageSubCommand,
@@ -26,7 +26,6 @@ pub fn send(
         return Err(Error::NoRelay.into());
     }
 
-    let keys = handle_keys(private_key)?;
     let client = create_client(&keys, relays, difficulty_target)?;
 
     let hex_pubkey = parse_key(sub_command_args.receiver.clone())?;

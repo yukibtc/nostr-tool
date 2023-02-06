@@ -6,7 +6,7 @@ use clap::Args;
 use nostr_sdk::prelude::*;
 
 use crate::error::Error;
-use crate::utils::{create_client, handle_keys, parse_key};
+use crate::utils::{create_client, parse_key};
 
 #[derive(Args)]
 pub struct TextNoteSubCommand {
@@ -25,7 +25,7 @@ pub struct TextNoteSubCommand {
 }
 
 pub fn broadcast_textnote(
-    private_key: Option<String>,
+    keys: Keys,
     relays: Vec<String>,
     difficulty_target: u8,
     sub_command_args: &TextNoteSubCommand,
@@ -34,7 +34,6 @@ pub fn broadcast_textnote(
         return Err(Error::NoRelay.into());
     }
 
-    let keys = handle_keys(private_key)?;
     let client = create_client(&keys, relays, difficulty_target)?;
 
     // Set up tags

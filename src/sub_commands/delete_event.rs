@@ -2,7 +2,7 @@ use clap::Args;
 use nostr_sdk::prelude::*;
 
 use crate::error::Error;
-use crate::utils::{create_client, handle_keys, parse_key};
+use crate::utils::{create_client, parse_key};
 
 #[derive(Args)]
 pub struct DeleteEventSubCommand {
@@ -15,7 +15,7 @@ pub struct DeleteEventSubCommand {
 }
 
 pub fn delete(
-    private_key: Option<String>,
+    keys: Keys,
     relays: Vec<String>,
     difficulty_target: u8,
     sub_command_args: &DeleteEventSubCommand,
@@ -24,7 +24,6 @@ pub fn delete(
         return Err(Error::NoRelay.into());
     }
 
-    let keys = handle_keys(private_key)?;
     let client = create_client(&keys, relays, difficulty_target)?;
 
     let event_id_to_delete_hex = parse_key(sub_command_args.event_id.clone())?;
